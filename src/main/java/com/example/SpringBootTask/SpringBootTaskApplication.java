@@ -7,13 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringBootTaskApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootTaskApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootTaskApplication.class, args);
 
-	}
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println("Hello world");
-	}
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("Hello world");
+    }
 }

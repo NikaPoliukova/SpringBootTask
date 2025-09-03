@@ -11,6 +11,23 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
-      show-sql: true
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23liUjwPGN0WQyMRKE
+            client-secret: 4bffe715aefe665f216803da288c727ec21740e0
+            scope: read:user,user:email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+jwt:
+  secret: "SECRETkemkgeogoeigoSECRETkemkgeogoeigoSECRETkemkgeogoeigoSECRETkemkgeogoeigo"
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+
