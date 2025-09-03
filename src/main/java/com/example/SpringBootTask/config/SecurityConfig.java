@@ -2,6 +2,7 @@ package com.example.SpringBootTask.config;
 
 import com.example.SpringBootTask.security.JwtUtils;
 import com.example.SpringBootTask.security.OAuth2AuthenticationSuccessHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +21,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
-
-    public SecurityConfig(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,8 +39,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/registration/**", "/api/v1/login/**").permitAll()
-                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/registration/**", "/api/v1/login/**","/actuator/**").permitAll()
+                        .requestMatchers("/api/v1/users/delete/***").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2.successHandler(successHandler))

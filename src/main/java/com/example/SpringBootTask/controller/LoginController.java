@@ -1,8 +1,8 @@
 package com.example.SpringBootTask.controller;
 
+import com.example.SpringBootTask.config.CustomMetrics;
 import com.example.SpringBootTask.dto.AuthRequest;
 import com.example.SpringBootTask.dto.AuthResponse;
-import com.example.SpringBootTask.entity.User;
 import com.example.SpringBootTask.security.JwtUtils;
 import com.example.SpringBootTask.service.UserService;
 import lombok.AllArgsConstructor;
@@ -25,6 +25,7 @@ public class LoginController {
     private final JwtUtils jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
+    private final CustomMetrics metrics;
 
     @PostMapping
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -32,15 +33,23 @@ public class LoginController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.userName(), request.password())
             );
-            User user = userService.getUserByUsername(request.userName())
+            var user = userService.getUserByUsername(request.userName())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            String token = jwtUtil.generateToken(user);
+            var token = jwtUtil.generateToken(user);
+
+            metrics.incrementSuccessfulLogins();
+
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (BadCredentialsException e) {
+            metrics.incrementFailedLogins();
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse("Invalid username or password"));
+
         } catch (UsernameNotFoundException e) {
+            metrics.incrementFailedLogins();
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new AuthResponse(e.getMessage()));
         }

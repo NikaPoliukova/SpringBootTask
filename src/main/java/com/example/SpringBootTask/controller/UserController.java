@@ -41,7 +41,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUserByUsername(@RequestParam("username")
                                                      @NotBlank @Size(min = 2, max = 60) String username) {
         userService.deleteUserByUsername(username);
