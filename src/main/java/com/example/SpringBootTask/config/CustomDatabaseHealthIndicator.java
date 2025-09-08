@@ -13,6 +13,7 @@ import java.sql.SQLException;
 public class CustomDatabaseHealthIndicator implements HealthIndicator {
 
     private final DataSource dataSource;
+
     @Override
     public Health health() {
         try (var connection = dataSource.getConnection()) {
