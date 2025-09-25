@@ -2,7 +2,6 @@ package com.example.SpringBootTask.security;
 
 import com.example.SpringBootTask.dto.UserDto;
 import com.example.SpringBootTask.entity.Role;
-import com.example.SpringBootTask.entity.User;
 import com.example.SpringBootTask.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,10 +44,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 .role(Role.USER)
                 .build();
 
-        User user = userService.getUserByUsername(username)
+        UserDto userResponse = userService.getUserByUsername(username)
                 .orElseGet(() -> userService.createUser(dto));
 
-        String token = jwtUtils.generateToken(user);
+
+        String token = jwtUtils.generateToken(userResponse.username(), userResponse.role());
 
         Cookie cookie = new Cookie("ACCESS_TOKEN", token);
         cookie.setHttpOnly(true);

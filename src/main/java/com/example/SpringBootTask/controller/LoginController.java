@@ -36,7 +36,7 @@ public class LoginController {
             var user = userService.getUserByUsername(request.userName())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            var token = jwtUtil.generateToken(user);
+            var token = jwtUtil.generateToken(user.username(), user.role());
 
             metrics.incrementSuccessfulLogins();
 

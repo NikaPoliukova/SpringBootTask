@@ -1,6 +1,6 @@
 package com.example.SpringBootTask.security;
 
-import com.example.SpringBootTask.entity.User;
+import com.example.SpringBootTask.entity.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -20,10 +20,10 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(User user) {
+    public String generateToken(String username, Role role) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("roles", List.of(user.getRole().name()))
+                .setSubject(username)
+                .claim("roles", List.of(role.name()))
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

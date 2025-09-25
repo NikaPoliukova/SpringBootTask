@@ -1,7 +1,6 @@
 package com.example.SpringBootTask.service;
 
 import com.example.SpringBootTask.dto.UserDto;
-import com.example.SpringBootTask.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +8,14 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
-    User createUser(UserDto dto);
 
-    Optional<User> getUserByUsername(String username);
+    UserDto createUser(UserDto dto);
 
-    List<User> getAllUser();
+    Optional<UserDto> getUserByUsername(String username);
 
-    Optional<User> updateUser(UserDto dto);
+    List<UserDto> getAllUsers();
+
+    Optional<UserDto> updateUser(String username, UserDto dto);
 
     void deleteUserByUsername(String username);
 }

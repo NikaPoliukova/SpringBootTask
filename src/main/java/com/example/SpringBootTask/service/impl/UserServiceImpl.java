@@ -15,47 +15,53 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public User createUser(UserDto dto) {
+    @Override
+    public UserDto createUser(UserDto dto) {
         User user = User.builder()
                 .username(dto.username())
                 .email(dto.email())
                 .password(passwordEncoder.encode(dto.password()))
                 .role(Role.USER)
                 .build();
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        return toResponseDto(saved);
     }
 
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    @Override
+    public Optional<UserDto> getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(this::toResponseDto);
     }
 
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::toResponseDto)
+                .toList();
     }
 
-    public Optional<User> updateUser(UserDto dto) {
-        if (dto.username() == null) {
-            return Optional.empty();
-        }
-        return userRepository.findByUsername(dto.username())
+    @Override
+    public Optional<UserDto> updateUser(String username, UserDto dto) {
+        return userRepository.findByUsername(username)
                 .map(user -> {
-                    if (dto.email() != null)
-                        user.setEmail(dto.email());
-                    if (dto.password() != null) {
-                        user.setPassword(dto.password());
-                    }
-                    return userRepository.save(user);
+                    if (dto.email() != null) user.setEmail(dto.email());
+                    if (dto.password() != null) user.setPassword(passwordEncoder.encode(dto.password()));
+                    User updated = userRepository.save(user);
+                    return toResponseDto(updated);
                 });
     }
 
-
+    @Override
     public void deleteUserByUsername(String username) {
         userRepository.findByUsername(username)
-                .ifPresent(user -> {
-                    userRepository.deleteById(user.getUserId());
-                });
+                .ifPresent(user -> userRepository.deleteById(user.getUserId()));
+    }
+
+    private UserDto toResponseDto(User user) {
+        return new UserDto(user.getUsername(), user.getEmail(), user.getPassword(), user.getRole());
     }
 }

@@ -26,6 +26,6 @@ public class AuthController {
         }
         var createdUser = userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User '" + createdUser.getUsername() + "' successfully registered");
+                .body("User '" + createdUser.username() + "' successfully registered");
     }
 }
